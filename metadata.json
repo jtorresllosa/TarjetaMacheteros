@@ -1,0 +1,6 @@
+{
+  "name": "Golf y Apuestas",
+  "description": "Aplicación móvil para gestión de rondas de golf, hándicaps, tarjetas de scores y apuestas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

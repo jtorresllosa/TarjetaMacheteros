@@ -1,0 +1,15 @@
+{
+  "name": "Golf y Apuestas",
+  "short_name": "GolfApuestas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#064e3b",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23059669'><path d='M19 5h-2V3H5v18h2v-7h11l1-5h-2z'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
