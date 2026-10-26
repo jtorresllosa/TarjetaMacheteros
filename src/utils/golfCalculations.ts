@@ -19,15 +19,17 @@ export interface PlayerRoundHandicap {
  */
 export function calculateRoundHandicaps(
   players: Player[],
-  config: RoundConfig
+  config?: RoundConfig
 ): PlayerRoundHandicap[] {
+  if (!players || !Array.isArray(players)) return [];
+  const cfg = config || { gameMode: 'contra_base', percentage: 100, startHole: 1 };
   const evaluated = players.map((p) => {
-    // Usar el hándicap temporal de la ronda si fue definido, de lo contrario el hándicap registrado
-    const effectiveHcp = config.roundHandicaps?.[p.id] !== undefined
-      ? config.roundHandicaps[p.id]
+    const roundHcps = (cfg as RoundConfig).roundHandicaps;
+    const effectiveHcp = roundHcps?.[p.id] !== undefined
+      ? roundHcps[p.id]
       : p.handicapIndex;
 
-    const raw = effectiveHcp * (config.percentage / 100);
+    const raw = effectiveHcp * ((cfg.percentage ?? 100) / 100);
     const hcb = golfRound(raw);
     return {
       playerId: p.id,
@@ -37,8 +39,8 @@ export function calculateRoundHandicaps(
     };
   });
 
-  if (config.gameMode === 'contra_base') {
-    const minHcb = Math.min(...evaluated.map((e) => e.hcb));
+  if (cfg.gameMode === 'contra_base') {
+    const minHcb = evaluated.length > 0 ? Math.min(...evaluated.map((e) => e.hcb)) : 0;
     return evaluated.map((e) => ({
       ...e,
       playingHandicap: Math.max(0, e.hcb - minHcb)
@@ -54,8 +56,9 @@ export function calculateRoundHandicaps(
  */
 export function getSortedRoundPlayers(
   players: Player[],
-  config: RoundConfig
+  config?: RoundConfig
 ): Player[] {
+  if (!players || !Array.isArray(players)) return [];
   const handicaps = calculateRoundHandicaps(players, config);
   const hcpMap = new Map(handicaps.map((h) => [h.playerId, h]));
 

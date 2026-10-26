@@ -12,27 +12,56 @@ import { Flag } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<string | null>(() => {
-    return localStorage.getItem('golf_current_user');
+    try {
+      return localStorage.getItem('golf_current_user');
+    } catch {
+      return null;
+    }
   });
 
   const [courses, setCourses] = useState<GolfCourse[]>(() => {
-    const saved = localStorage.getItem('golf_courses');
-    return saved ? JSON.parse(saved) : INITIAL_COURSES;
+    try {
+      const saved = localStorage.getItem('golf_courses');
+      return saved ? JSON.parse(saved) : INITIAL_COURSES;
+    } catch {
+      return INITIAL_COURSES;
+    }
   });
 
   const [players, setPlayers] = useState<Player[]>(() => {
-    const saved = localStorage.getItem('golf_players');
-    return saved ? JSON.parse(saved) : INITIAL_PLAYERS;
+    try {
+      const saved = localStorage.getItem('golf_players');
+      return saved ? JSON.parse(saved) : INITIAL_PLAYERS;
+    } catch {
+      return INITIAL_PLAYERS;
+    }
   });
 
   const [activeRound, setActiveRound] = useState<Round | null>(() => {
-    const saved = localStorage.getItem('golf_active_round');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('golf_active_round');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (!parsed || !parsed.config || !parsed.scores) {
+        localStorage.removeItem('golf_active_round');
+        return null;
+      }
+      return parsed;
+    } catch {
+      localStorage.removeItem('golf_active_round');
+      return null;
+    }
   });
 
   const [activeTab, setActiveTab] = useState<'setup' | 'active' | 'courses' | 'players' | 'creator'>(() => {
-    const savedRound = localStorage.getItem('golf_active_round');
-    return savedRound ? 'active' : 'setup';
+    try {
+      const savedRound = localStorage.getItem('golf_active_round');
+      if (!savedRound) return 'setup';
+      const parsed = JSON.parse(savedRound);
+      return (parsed && parsed.config && parsed.scores) ? 'active' : 'setup';
+    } catch {
+      return 'setup';
+    }
   });
 
   useEffect(() => {
